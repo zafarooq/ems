@@ -11,22 +11,31 @@
  ctrl.use(bodyParser.json());
 
  ctrl.get('/', (req, resp) => {
-     Department.find().then((data) => {
-         resp.send(data);
-     }, (err) => {
-         resp.status(400).send(err);
-     });
+    //  Department.find().then((data) => {
+    //      resp.send(data);
+    //  }, (err) => {
+    //      resp.status(400).send(err);
+    //  });
+    departmentManger.getAllDepartments().then((data)=>{
+        resp.send(data);
+    }).catch((e)=>{
+        resp.status(400).send(e);
+    });
  });
 
 
  ctrl.get('/:id', (req, resp) => {
-    var id = req.params.id;
-    debugger;
-     departmentManger.getEventByid(id).then((d)=>{
-         resp.send(d);
-     }).catch((e)=>{
-        resp.status(400).send(e);
-     })
+     var id = req.params.id;
+     departmentManger.getDepartmentByid(id).then((data) => {
+         if (!data) {
+             return resp.status(400).send({
+                 'data': 'No Record Found'
+                });
+            }
+            resp.send(data);
+        }).catch((e) => {
+            resp.status(400).send(e);
+        });
     //  var id = req.params.id;
     //  if (!ObjectID.isValid(id)) {
     //      return resp.status(400).send({
